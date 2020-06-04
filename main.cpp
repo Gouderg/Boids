@@ -25,7 +25,7 @@ int main(int argc, char const *argv[]) {
 		
 		for (auto elt : nuee.getBirds()) {
 			sf::CircleShape triangle(nuee.getSizeBird(), 3);
-			triangle.setFillColor(sf::Color(rand()%255, rand()%255, rand()%255));	
+			triangle.setFillColor(sf::Color(elt.getR(), elt.getG(), elt.getB()));	
 			triangle.setPosition(elt.getX(),elt.getY());
 			window.draw(triangle);
 		}

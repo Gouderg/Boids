@@ -28,4 +28,5 @@ class Flock {
 		std::vector<Bird> birds;
 		int nbBird = 10;
 		int sizeBird = SIZE_W * 0.01;
+		
 };

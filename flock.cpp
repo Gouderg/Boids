@@ -26,7 +26,7 @@ Flock::Flock() {
 
 			// Si tout est bon, on créer un nouvelle oiseau
 			if (!isHere) {
-				Bird bird = Bird(i);
+				Bird bird = Bird(i, rand()%255, rand()%255, rand()%255);
 				bird.setX(x);
 				bird.setY(y);
 				birds.push_back(bird);
