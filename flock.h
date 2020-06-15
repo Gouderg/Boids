@@ -6,8 +6,10 @@
 #include <cstdlib>
 
 #include "bird.h"
+#include "mouvVec.h"
 
 class Bird;
+class MouvVec;
 
 class Flock {
 	public:
@@ -21,12 +23,12 @@ class Flock {
 			
 		void display();  // Affiche l'id
 
-		std::vector<Bird> getBirds() const {return birds;}
+		std::vector<Bird*> getBirds() const {return this->birds;}
 		int getSizeBird() const {return sizeBird;}
 
 	private:
-		std::vector<Bird> birds;
-		int nbBird = 10;
-		int sizeBird = SIZE_W * 0.01;
-		
+		std::vector<Bird*> birds;
+		int nbBird = 5;
+		const int sizeBird = SIZE_W * 0.01;
+		const int sizeBirdCollision = sizeBird * 4;
 };

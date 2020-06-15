@@ -1,10 +1,11 @@
 #include "flock.h"
 
 Flock::Flock() {
-	
+
 	srand(time(NULL));
 	bool isHere = false;
 	int collision = 0;
+
 
 	for (int i = 0; i < nbBird; ++i) {
 
@@ -14,11 +15,15 @@ Flock::Flock() {
 			// Générer une valeur de x et une valeur de y
 			int x = rand() % SIZE_W;
 			int y = rand() % SIZE_H;
+			int z = 0;
 
 			// On parcours chaque bird déjà créé
 			for (auto elt : birds) {
 				// On regarde l'encadrement
-				if ((x < elt.getX()+sizeBird && x > elt.getX()-sizeBird) || (y < elt.getY()+sizeBird && y > elt.getY()-sizeBird)) {
+				if ((x < elt->getPosition()->getX()+sizeBird && 
+					 x > elt->getPosition()->getX()-sizeBird) || 
+					(y < elt->getPosition()->getY()+sizeBird && 
+					 y > elt->getPosition()->getY()-sizeBird)) {
 					isHere = true;
 					collision ++;
 				}
@@ -26,9 +31,7 @@ Flock::Flock() {
 
 			// Si tout est bon, on créer un nouvelle oiseau
 			if (!isHere) {
-				Bird bird = Bird(i, rand()%255, rand()%255, rand()%255);
-				bird.setX(x);
-				bird.setY(y);
+				Bird *bird = new Bird(i, rand()%255, rand()%255, rand()%255, rand()%360, x, y, z);
 				birds.push_back(bird);
 			}
 
@@ -40,10 +43,4 @@ Flock::Flock() {
 
 Flock::~Flock() {
 	//std::cout << "Appel du destructeur de Flock" << std::endl;
-}
-
-void Flock::display() {
-	for (auto elt : birds) {
-		std::cout << elt.getId() << std::endl;
-	}
 }

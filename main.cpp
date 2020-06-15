@@ -4,11 +4,11 @@
 
 #include "bird.h"
 #include "flock.h"
+#include "mouvVec.h"
 
 int main(int argc, char const *argv[]) {	
 	
 	Flock nuee = Flock();
-	nuee.display();
 
 	// Initialisation de l'antialiasing et de la fenêtre
 	sf::ContextSettings settings;
@@ -21,13 +21,12 @@ int main(int argc, char const *argv[]) {
 			if(event.type == sf::Event::Closed) window.close();		// Fermeture de la fenetre
 		}
 		// On nettoie notre écran
-		window.clear(sf::Color(25,25,112,128));
+		window.clear(sf::Color(25,25,100,80));
 		
+		// On parcours chaque oiseaux
 		for (auto elt : nuee.getBirds()) {
-			sf::CircleShape triangle(nuee.getSizeBird(), 3);
-			triangle.setFillColor(sf::Color(elt.getR(), elt.getG(), elt.getB()));	
-			triangle.setPosition(elt.getX(),elt.getY());
-			window.draw(triangle);
+			// On update la position de l'oiseau en fonction de sa vitesse
+			elt->drawBird(&window, nuee.getSizeBird()); // On redessine la nouvelle postion de l'oiseau
 		}
 		
 		window.display();
