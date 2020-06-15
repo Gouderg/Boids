@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
-#include  <iostream>
+#include <iostream>
+#include <unistd.h>
 
 #include "bird.h"
 #include "flock.h"
@@ -8,6 +9,7 @@
 
 int main(int argc, char const *argv[]) {	
 	
+	// Initialisation d'une nuee
 	Flock nuee = Flock();
 
 	// Initialisation de l'antialiasing et de la fenêtre
@@ -25,11 +27,14 @@ int main(int argc, char const *argv[]) {
 		
 		// On parcours chaque oiseaux
 		for (auto elt : nuee.getBirds()) {
-			// On update la position de l'oiseau en fonction de sa vitesse
+			elt->update(nuee.SIZE_W, nuee.SIZE_H, nuee.SIZE_D);// On update la position de l'oiseau en fonction de sa vitesse
 			elt->drawBird(&window, nuee.getSizeBird()); // On redessine la nouvelle postion de l'oiseau
 		}
 		
 		window.display();
+
+		usleep(10000); // 0.01 seconde
+
 	}
 
 

@@ -29,12 +29,11 @@ Flock::Flock() {
 				}
 			}
 
-			// Si tout est bon, on créer un nouvelle oiseau
+			// Si tout est bon, on créer un nouvel oiseau
 			if (!isHere) {
 				Bird *bird = new Bird(i, rand()%255, rand()%255, rand()%255, rand()%360, x, y, z);
 				birds.push_back(bird);
 			}
-
 		// Sinon on recommence
 		} while (isHere);
 	}

@@ -15,7 +15,8 @@ class Flock {
 	public:
 
 		const int SIZE_W = 800;
-		const int SIZE_H = 600;	
+		const int SIZE_H = 600;
+		const int SIZE_D = 1;	
 
 
 		Flock(); 	// Constructeur
@@ -28,7 +29,7 @@ class Flock {
 
 	private:
 		std::vector<Bird*> birds;
-		int nbBird = 5;
+		int nbBird = 20;
 		const int sizeBird = SIZE_W * 0.01;
 		const int sizeBirdCollision = sizeBird * 4;
 };

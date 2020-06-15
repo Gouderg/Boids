@@ -7,12 +7,14 @@ MouvVec::MouvVec(const int x, const int y, const int z) {
 }
 
 MouvVec::~MouvVec() {
-	std::cout << "Appel du destructeur" << std::endl;
+	// std::cout << "Appel du destructeur MouvVec" << std::endl;
 }
 
-void MouvVec::setPosition(const int x, const int y, const int z) {
-	this->x = x;
-	this->y = y;
-	this->z = z;
+
+void MouvVec::addVec(MouvVec v) {
+
+	this->x = this->x + v.getX();
+	this->y = this->y + v.getY();
+	this->z += v.getZ();
 }
 
