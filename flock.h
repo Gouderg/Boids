@@ -20,16 +20,17 @@ class Flock {
 
 
 		Flock(); 	// Constructeur
-		~Flock();	// Destructeur
+		~Flock(){};	// Destructeur
 			
 		void display();  // Affiche l'id
 
 		std::vector<Bird*> getBirds() const {return this->birds;}
 		int getSizeBird() const {return sizeBird;}
+		int getNbBird() const {return nbBird;};
 
 	private:
 		std::vector<Bird*> birds;
-		int nbBird = 20;
+		int nbBird = 200;
 		const int sizeBird = SIZE_W * 0.01;
 		const int sizeBirdCollision = sizeBird * 4;
 };

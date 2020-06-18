@@ -2,6 +2,7 @@
 #include <SFML/System.hpp>
 #include <iostream>
 #include <unistd.h>
+#include <vector>
 
 #include "bird.h"
 #include "flock.h"
@@ -25,9 +26,9 @@ int main(int argc, char const *argv[]) {
 		// On nettoie notre écran
 		window.clear(sf::Color(25,25,100,80));
 		
-		// On parcours chaque oiseaux
+		// On parcours chaque oiseau
 		for (auto elt : nuee.getBirds()) {
-			elt->update(nuee.SIZE_W, nuee.SIZE_H, nuee.SIZE_D);// On update la position de l'oiseau en fonction de sa vitesse
+			elt->update(nuee);// On update la position de l'oiseau en fonction de sa vitesse
 			elt->drawBird(&window, nuee.getSizeBird()); // On redessine la nouvelle postion de l'oiseau
 		}
 		
