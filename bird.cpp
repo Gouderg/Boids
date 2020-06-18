@@ -1,7 +1,7 @@
 #include "bird.h"
 
 // Constructeur 
-Bird::Bird(int id, int r, int g, int b, int xPos, int yPos, int zPos) {
+Bird::Bird(int id, int r, int g, int b, double xPos, double yPos, double zPos) {
 
 	this->id = id;
 	color[0] = r;
@@ -9,7 +9,7 @@ Bird::Bird(int id, int r, int g, int b, int xPos, int yPos, int zPos) {
 	color[2] = b;
 	this->position = new MouvVec(xPos, yPos, zPos);
 	//this->velocite = new MouvVec((rand() % 20) - 10, (rand() % 20) - 10, 0);
-	this->velocite = new MouvVec((rand() % 12) - 6, (rand() % 12) - 6, 0);
+	this->velocite = new MouvVec(((rand() % 13000) - 6000)/1000.0, ((rand() % 13000) - 6000)/1000.0, 0);
 	
 
 
@@ -35,37 +35,54 @@ void Bird::drawBird(sf::RenderWindow *window, int sizeBird) {
 	convex.setFillColor(sf::Color(getR(), getG(), getB()));
 	//convex.setRotation(getAngle());
 	window->draw(convex);
-
-	// // Zone de collision de l'oiseau
-	// sf::CircleShape circle(sizeBird * 4);
-	// circle.setPosition(position->getX() - sizeBird * 4, position->getY() - sizeBird * 4);
-	// circle.setFillColor(sf::Color(253, 241, 184, 50));
-	// window->draw(circle);
-
 }
 
 // Update la position de l'oiseau en fonction des règles
 void Bird::update(Flock nuee) {
 	
 	// Règle 1: cohésion
-	//this->velocite->addVec(cohesion(*this->position, nuee, this->id));
+	this->velocite->addVec(cohesion(*this->position, nuee, this->id));
 	// Règle 2: séparation
 	// Règle 3: alignement
+	
+	// On ajuste la vitesse par rapport à la vitesse max
+	this->velocite = limitVitesse(this->velocite, nuee.getVitesseMax());
 
-	std::cout << this->velocite->getX() << " : " << this->velocite->getY() << std::endl;
+	// On ajoute la vitesse à la position
 	this->position->addVec(*this->velocite);
 
 	// Regarde si les oiseaux sortent du cadre ou non
-	if (this->position->getX() > nuee.SIZE_W) this->position->setX(this->position->getX() % nuee.SIZE_W);
-	if (this->position->getY() > nuee.SIZE_H) this->position->setY(this->position->getY() % nuee.SIZE_H);
-	if (this->position->getZ() > nuee.SIZE_D) this->position->setZ(this->position->getZ() % nuee.SIZE_D);
+	if (this->position->getX() > nuee.SIZE_W) this->position->setX(std::fmod(this->position->getX(), nuee.SIZE_W));
+	if (this->position->getY() > nuee.SIZE_H) this->position->setY(std::fmod(this->position->getY(), nuee.SIZE_H));
+	if (this->position->getZ() > nuee.SIZE_D) this->position->setZ(std::fmod(this->position->getZ(), nuee.SIZE_D));
 
 	if (this->position->getX() < 0) this->position->setX(this->position->getX() + nuee.SIZE_W - this->position->getX());
 	if (this->position->getY() < 0) this->position->setY(this->position->getY() + nuee.SIZE_H - this->position->getY());	
 	if (this->position->getZ() < 0) this->position->setZ(this->position->getY() + nuee.SIZE_D - this->position->getZ());	
 }
 
-// Rule 1: Cohesion (Calcule le centre perçu par les oiseaux) 
+// Limite la vitesse maximale
+MouvVec* Bird::limitVitesse(MouvVec* velocite, double vitesseMax) {
+
+	// Check la vitesse de x
+	if (velocite->getX() > vitesseMax) {
+		velocite->setX(vitesseMax);
+	} else if (velocite->getX() < -vitesseMax) {
+		velocite->setX(-vitesseMax);
+	}
+
+	// Checl la vitesse de y
+	if (velocite->getY() > vitesseMax) {
+		velocite->setY(vitesseMax);
+	} else if (velocite->getY() < -vitesseMax) {
+		velocite->setY(-vitesseMax);
+	}
+
+	return velocite;
+
+}
+
+// Rule 1: Cohésion (Calcule le centre perçu par les oiseaux) 
 MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
 
 	MouvVec allCentre;
@@ -78,7 +95,8 @@ MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
 
 	allCentre.divScal(nuee.getNbBird() - 1); 		// On divise par le nombre d'oiseau comptabilisé
 	allCentre.subVec(position);						// On retire les coordonées de l'oiseau en question
-	allCentre.divScal(100);							// à remplacer
+	allCentre.mulScal(nuee.getAttraction());							
 	
 	return allCentre;
 }
+

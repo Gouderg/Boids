@@ -1,6 +1,6 @@
 #include "mouvVec.h"
 
-MouvVec::MouvVec(const int x, const int y, const int z) {
+MouvVec::MouvVec(const double x, const double y, const double z) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
@@ -31,25 +31,25 @@ void MouvVec::mulVec(MouvVec v) {
 	this->z *= v.getZ();	
 }
 
-void MouvVec::addScal(int n) {
+void MouvVec::addScal(double n) {
 	this->x += n;
 	this->y += n;
 	this->z += n;
 }
 
-void MouvVec::subScal(int n) {
+void MouvVec::subScal(double n) {
 	this->x -= n;
 	this->y -= n;
 	this->z -= n;
 }
 
-void MouvVec::divScal(int n) {
+void MouvVec::divScal(double n) {
 	this->x /= n;
 	this->y /= n;
 	this->z /= n;	
 }
 
-void MouvVec::mulScal(int n) {
+void MouvVec::mulScal(double n) {
 	this->x *= n;
 	this->y *= n;
 	this->z *= n;	

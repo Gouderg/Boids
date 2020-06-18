@@ -2,7 +2,7 @@
 #include <SFML/System.hpp>
 #include <iostream>
 #include <unistd.h>
-#include <vector>
+#include <ctime>
 
 #include "bird.h"
 #include "flock.h"
@@ -10,6 +10,8 @@
 
 int main(int argc, char const *argv[]) {	
 	
+	srand(time(NULL));	
+
 	// Initialisation d'une nuee
 	Flock nuee = Flock();
 

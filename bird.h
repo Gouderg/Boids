@@ -16,7 +16,7 @@ class Bird {
 	
 	public:
 		Flock *flock;
-		Bird(int id, int r, int g, int b, int xPos, int yPos, int zPos);
+		Bird(int id, int r, int g, int b, double xPos, double yPos, double zPos);
 		~Bird(){};
 		
 		int getId() const {return this->id;}
@@ -30,9 +30,9 @@ class Bird {
 		
 		MouvVec cohesion(MouvVec position, Flock nuee, int id);
 
-
-		MouvVec *getPosition() const {return this->position;}
-		MouvVec *getVelocite() const {return this->velocite;}
+		MouvVec* limitVitesse(MouvVec* velocite, double vitesseMax);
+		MouvVec* getPosition() const {return this->position;}
+		MouvVec* getVelocite() const {return this->velocite;}
 
 
 

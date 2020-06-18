@@ -14,7 +14,7 @@ class MouvVec {
 		Bird *bird;
 
 		MouvVec(){};
-		MouvVec(const int x, const int y, const int z);
+		MouvVec(const double x, const double y, const double z);
 		~MouvVec(){};
 
 		// Opération de vecteur sur des vecteurs
@@ -24,22 +24,22 @@ class MouvVec {
 		void mulVec(MouvVec v);
 
 		// Opération de scalaire sur vecteur
-		void addScal(int n);
-		void subScal(int n);
-		void divScal(int n);
-		void mulScal(int n);
+		void addScal(double n);
+		void subScal(double n);
+		void divScal(double n);
+		void mulScal(double n);
 
 		// Setter
-		void setX(const int x) {this->x = x;}
-		void setY(const int y) {this->y = y;}
-		void setZ(const int z) {this->z = z;}
+		void setX(const double x) {this->x = x;}
+		void setY(const double y) {this->y = y;}
+		void setZ(const double z) {this->z = z;}
 
 		// Getter
-		int getX() const {return this->x;}
-		int getY() const {return this->y;}
-		int getZ() const {return this->z;}
+		double getX() const {return this->x;}
+		double getY() const {return this->y;}
+		double getZ() const {return this->z;}
 
 
 	private:
-		int x, y, z;
+		double x, y, z;
 };
