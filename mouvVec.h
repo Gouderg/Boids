@@ -29,6 +29,9 @@ class MouvVec {
 		void divScal(double n);
 		void mulScal(double n);
 
+		// Norme du vecteur
+		double normalize();
+
 		// Setter
 		void setX(const double x) {this->x = x;}
 		void setY(const double y) {this->y = y;}
@@ -38,6 +41,7 @@ class MouvVec {
 		double getX() const {return this->x;}
 		double getY() const {return this->y;}
 		double getZ() const {return this->z;}
+
 
 
 	private:

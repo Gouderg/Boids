@@ -11,7 +11,6 @@
 int main(int argc, char const *argv[]) {	
 	
 	srand(time(NULL));	
-
 	// Initialisation d'une nuee
 	Flock nuee = Flock();
 
@@ -19,6 +18,7 @@ int main(int argc, char const *argv[]) {
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(nuee.SIZE_W,nuee.SIZE_H), "Boids", sf::Style::Default, settings);
+	window.setFramerateLimit(60);
 
 	while (window.isOpen()) {
 		sf::Event event;
@@ -31,12 +31,10 @@ int main(int argc, char const *argv[]) {
 		// On parcours chaque oiseau
 		for (auto elt : nuee.getBirds()) {
 			elt->update(nuee);// On update la position de l'oiseau en fonction de sa vitesse
-			elt->drawBird(&window, nuee.getSizeBird()); // On redessine la nouvelle postion de l'oiseau
+			elt->drawBird(&window, nuee.getSizeBird(), elt->getId()); // On redessine la nouvelle postion de l'oiseau
 		}
 		
 		window.display();
-
-		usleep(10000); // 0.01 seconde
 
 	}
 
