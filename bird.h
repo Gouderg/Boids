@@ -37,6 +37,7 @@ class Bird {
 		// Règles d'un boid
 		MouvVec cohesion(MouvVec position, Flock nuee, int id);
 		MouvVec separation(MouvVec position, Flock nuee, int id);
+		MouvVec alignement(MouvVec velocite, MouvVec position, Flock nuee, int id);
 
 		
 		void limitVelocite(MouvVec* velocite, double vitesseMax);
