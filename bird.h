@@ -40,7 +40,7 @@ class Bird {
 		MouvVec alignement(MouvVec velocite, MouvVec position, Flock nuee, int id);
 
 		
-		void limitVelocite(MouvVec* velocite, double vitesseMax);
+		void limit(MouvVec* vecteur, double valMax);
 		void checkEdges(Flock nuee);
 		void countNeighbours(Flock nuee, MouvVec position, int id);
 

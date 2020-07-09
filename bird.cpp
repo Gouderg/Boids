@@ -47,24 +47,24 @@ void Bird::update(Flock nuee) {
 	this->velocite->addVec(alignement(*this->velocite, *this->position, nuee, this->id));
 	
 	// On ajuste la vitesse par rapport à la vitesse max
-	limitVelocite(this->velocite, nuee.getVitesseMax());
+	limit(this->velocite, nuee.getVitesseMax());
 
 	// On ajoute la vitesse à la position
 	this->position->addVec(*this->velocite);
 	checkEdges(nuee);
 }
 
-// Limite la vélocité maximale
-void Bird::limitVelocite(MouvVec* velocite, double vitesseMax) {
+// Limite le vecteur avec le scalaire passé
+void Bird::limit(MouvVec* vecteur, double valMax) {
 
 	// On récupère la norme de la velocité
-	double norme = velocite->normalize();
+	double norme = vecteur->normalize();
 	
 	// On divise le vecteur par sa norme
-	velocite->divScal(norme);
+	vecteur->divScal(norme);
 
 	// On le multiplie par la vitesse
-	velocite->mulScal(vitesseMax);
+	vecteur->mulScal(valMax);
 }
 
 // Check les bordures de la map
@@ -74,9 +74,9 @@ void Bird::checkEdges(Flock nuee) {
 	if (this->position->getY() > nuee.SIZE_H) this->position->setY(std::fmod(this->position->getY(), nuee.SIZE_H));
 	if (this->position->getZ() > nuee.SIZE_D) this->position->setZ(std::fmod(this->position->getZ(), nuee.SIZE_D));
 
-	if (this->position->getX() < 0) this->position->setX(this->position->getX() + nuee.SIZE_W - this->position->getX());
-	if (this->position->getY() < 0) this->position->setY(this->position->getY() + nuee.SIZE_H - this->position->getY());	
-	if (this->position->getZ() < 0) this->position->setZ(this->position->getZ() + nuee.SIZE_D - this->position->getZ());	
+	if (this->position->getX() < 0) this->position->setX(nuee.SIZE_W);
+	if (this->position->getY() < 0) this->position->setY(nuee.SIZE_H);	
+	if (this->position->getZ() < 0) this->position->setZ(nuee.SIZE_D);	
 }
 
 // Règle 1: Cohésion (Calcule le centre perçu par les oiseaux afin de les attiré au même endroit) 
@@ -98,7 +98,7 @@ MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
 		perceivedCentre.divScal(nbNeighbour);				 		
 		perceivedCentre.subVec(position);						
 		perceivedCentre.mulScal(nuee.getAttraction());
-		perceivedCentre.divScal(perceivedCentre.normalize());
+		limit(&perceivedCentre, nuee.getForceMax());
 	}
 
 	return perceivedCentre;
@@ -119,7 +119,7 @@ MouvVec Bird::separation(MouvVec position, Flock nuee, int id) {
 			}
 		}
 	}
-	if (nbNeighbour > 0) collision.divScal(collision.normalize());
+	if (nbNeighbour > 0) limit(&collision, nuee.getForceMax());
 
 	return collision;
 }
@@ -143,6 +143,7 @@ MouvVec Bird::alignement(MouvVec velocite, MouvVec position, Flock nuee, int id)
 		perceivedVelocity.divScal(nbNeighbour);
 		perceivedVelocity.subVec(velocite);
 		perceivedVelocity.divScal(nuee.getAlignement());
+		limit(&perceivedVelocity, nuee.getForceMax());
 	}
 	return perceivedVelocity;
 }

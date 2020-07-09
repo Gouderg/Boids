@@ -14,8 +14,8 @@ class MouvVec;
 class Flock {
 	public:
 
-		const int SIZE_W = 800;
-		const int SIZE_H = 600;
+		const int SIZE_W = 1200;
+		const int SIZE_H = 800;
 		const int SIZE_D = 1;	
 
 
@@ -27,6 +27,7 @@ class Flock {
 		int getSizeBird() const {return sizeBird;}
 		int getNbBird() const {return nbBird;};
 		double getVitesseMax() const {return vitesseMax;}
+		double getForceMax() const {return forceMax;}
 		double getZoneAttraction() const {return zoneAttraction;}
 		double getZoneAlignement() const {return zoneAlignement;}
 		double getZoneRepulsion() const {return zoneRepulsion;}
@@ -38,13 +39,14 @@ class Flock {
 		std::vector<Bird*> birds;
 		
 		// Constantes sur les caractéristiques des oiseaux
-		const int nbBird = 50;									// Nombre d'oiseaux
-		const int sizeBird = SIZE_W * 0.01;						// Taille d'un oiseau
+		const int nbBird = 200;									// Nombre d'oiseaux
+		const int sizeBird = 7;									// Taille d'un oiseau
 		const double vitesseMax = 6;							// Vitesse max des oiseaux
+		const double forceMax = 0.2;							// Force maximale supporté par un oiseau
 		const double zoneAttraction = sizeBird * 12;			// Zone d'attraction pour le centre perçu
 		const double zoneAlignement = sizeBird * 4;				// Zone d'orientation
 		const double zoneRepulsion = sizeBird * 2;				// Zone de répulsion
-		const double attraction = 0.02;							// Attraction de l'oiseau vers le centre perçu => 1%
-		const double repulsion = 0.02;							// Répulsion des autre oiseau
-		const double alignement = 0.01;
+		const double attraction = 0.01;							// Attraction de l'oiseau vers le centre perçu => 1%
+		const double repulsion = 1;								// Répulsion des autre oiseau
+		const double alignement = 1;
 };	
