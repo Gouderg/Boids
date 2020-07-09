@@ -19,34 +19,35 @@ class Flock {
 		const int SIZE_D = 1;	
 
 
-		Flock(); 	// Constructeur
-		~Flock(){};	// Destructeur
+		Flock();
+		~Flock(){};
 
 		// Getter
 		std::vector<Bird*> getBirds() const {return this->birds;}
 		int getSizeBird() const {return sizeBird;}
 		int getNbBird() const {return nbBird;};
-		double getVitesseMax() const {return vitesseMax;}
+		double getSpeedMax() const {return speedMax;}
 		double getForceMax() const {return forceMax;}
-		double getZoneAttraction() const {return zoneAttraction;}
-		double getZoneAlignement() const {return zoneAlignement;}
-		double getZoneRepulsion() const {return zoneRepulsion;}
+		double getAttractionArea() const {return attractionArea;}
+		double getAlignmentArea() const {return alignmentArea;}
+		double getRepulsionArea() const {return repulsionArea;}
 		double getAttraction() const {return attraction;}
 		double getRepulsion() const {return repulsion;}
-		double getAlignement() const {return alignement;}
+		double getAlignment() const {return alignment;}
 
 	private:
+		// Flock
 		std::vector<Bird*> birds;
 		
-		// Constantes sur les caractéristiques des oiseaux
-		const int nbBird = 200;									// Nombre d'oiseaux
-		const int sizeBird = 7;									// Taille d'un oiseau
-		const double vitesseMax = 6;							// Vitesse max des oiseaux
-		const double forceMax = 0.2;							// Force maximale supporté par un oiseau
-		const double zoneAttraction = sizeBird * 12;			// Zone d'attraction pour le centre perçu
-		const double zoneAlignement = sizeBird * 4;				// Zone d'orientation
-		const double zoneRepulsion = sizeBird * 2;				// Zone de répulsion
-		const double attraction = 0.02;							// Attraction de l'oiseau vers le centre perçu => 1%
-		const double repulsion = 0.02;								// Répulsion des autre oiseau
-		const double alignement = 1;
+		// Constants about birds characteristics
+		const int nbBird = 200;								// Numbers of bird
+		const int sizeBird = 7;								// Size of bird
+		const double speedMax = 6;							// Speed max
+		const double forceMax = 0.2;						// Magnitude max
+		const double attractionArea = sizeBird * 12;		// Attraction area pour le centre perçu
+		const double alignmentArea = sizeBird * 4;			// Orientation area
+		const double repulsionArea = sizeBird * 2;			// Repulsion area
+		const double attraction = 0.02;						// Attraction force
+		const double repulsion = 0.02;						// Repulsion force
+		const double alignment = 1;							// Alignment force
 };	

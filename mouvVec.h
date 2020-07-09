@@ -17,13 +17,13 @@ class MouvVec {
 		MouvVec(const double x, const double y, const double z);
 		~MouvVec(){};
 
-		// Opération de vecteur sur des vecteurs
+		// Operation vector on vector
 		void addVec(MouvVec v);
 		void subVec(MouvVec v);
 		void divVec(MouvVec v);
 		void mulVec(MouvVec v);
 
-		// Opération de scalaire sur vecteur
+		// Operation scalar on vector
 		void addScal(double n);
 		void subScal(double n);
 		void divScal(double n);

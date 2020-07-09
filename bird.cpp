@@ -1,22 +1,21 @@
 #include "bird.h"
 
-// Constructeur 
-Bird::Bird(int id, int r, int g, int b, double xPos, double yPos, double zPos) {
+Bird::Bird(int id, int r, int g, int b, double x, double y, double z) {
 
 	this->id = id;
 	color[0] = r;
 	color[1] = g;
 	color[2] = b;
-	this->position = new MouvVec(xPos, yPos, zPos);
-	this->velocite = new MouvVec(((rand() % 4000) - 1500)/1000.0, ((rand() % 4000) - 1500)/1000.0, 0);	
+	this->position = new MouvVec(x, y, z);
+	this->velocity = new MouvVec(((rand() % 4000) - 1500)/1000.0, ((rand() % 4000) - 1500)/1000.0, 0);	
 }
 
-// Dessine la nouvelle position de l'oiseau
+// Draw new bird
 void Bird::drawBird(sf::RenderWindow *window, int sizeBird, int id) {
 	
-	double angle = M_PI - atan2(velocite->getX(),velocite->getY());
+	double angle = M_PI - atan2(velocity->getX(),velocity->getY());
 
-	// Oiseau
+	// Bird
 	sf::ConvexShape convex;
 	convex.setPointCount(4);
 	convex.setPoint(0, sf::Vector2f(position->getX() + (-sizeBird) * cos(angle) + (-sizeBird) * sin(angle), position->getY() + (-sizeBird) * sin(angle) + sizeBird * cos(angle)));
@@ -36,41 +35,34 @@ void Bird::drawBird(sf::RenderWindow *window, int sizeBird, int id) {
 	
 }
 
-// Update la position de l'oiseau en fonction des règles
+// Update bird position with rules
 void Bird::update(Flock nuee) {
 	
-	// Règle 1: cohésion
-	this->velocite->addVec(cohesion(*this->position, nuee, this->id));
-	// Règle 2: séparation
-	this->velocite->addVec(separation(*this->position, nuee, this->id));
-	// Règle 3: alignement
-	this->velocite->addVec(alignement(*this->velocite, *this->position, nuee, this->id));
+	// Rule 1: cohesion
+	this->velocity->addVec(cohesion(*this->position, nuee, this->id));
+	// Rule 2: sparation
+	this->velocity->addVec(separation(*this->position, nuee, this->id));
+	// Rule 3: alignment
+	this->velocity->addVec(alignment(*this->velocity, *this->position, nuee, this->id));
 	
-	// On ajuste la vitesse par rapport à la vitesse max
-	limit(this->velocite, nuee.getVitesseMax());
+	// Adjust speed
+	limit(this->velocity, nuee.getSpeedMax());
 
-	// On ajoute la vitesse à la position
-	this->position->addVec(*this->velocite);
+	this->position->addVec(*this->velocity);
 	checkEdges(nuee);
 }
 
-// Limite le vecteur avec le scalaire passé
+// Limit vector with scalar
 void Bird::limit(MouvVec* vecteur, double valMax) {
 
 	if (std::abs(vecteur->normalize()) > valMax) {
-		// On récupère la norme
-		double norme = vecteur->normalize();
-	
-		// On divise le vecteur par sa norme
-		vecteur->divScal(norme);
-
-		// On le multiplie par la valeur max
+		vecteur->divScal(vecteur->normalize());
 		vecteur->mulScal(valMax);
 	}
 	
 }
 
-// Check les bordures de la map
+// Check map borders
 void Bird::checkEdges(Flock nuee) {
 
 	// 2-tore 
@@ -84,7 +76,7 @@ void Bird::checkEdges(Flock nuee) {
 
 }
 
-// Règle 1: Cohésion (Calcule le centre perçu par les oiseaux afin de les attiré au même endroit) 
+// Rule 1: Cohesion (Calculate the perceived center with his neighbours) 
 MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
 
 	MouvVec perceivedCentre(0,0,0);
@@ -93,7 +85,7 @@ MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
 	for (auto bird : nuee.getBirds()) {
 		MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
 		if (bird->getId() != id) {
-			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getZoneAttraction()) {
+			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getAttractionArea()) {
 				perceivedCentre.addVec(birdPosTemp);		// On cumule chaque coordonnées
 				nbNeighbour ++;	
 			}
@@ -109,7 +101,7 @@ MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
 	return perceivedCentre;
 }
 
-// Règle 2: Séparation (Repousse les oiseaux qui sont autour)
+// Rule 2: Separation (Repels birds around)
 MouvVec Bird::separation(MouvVec position, Flock nuee, int id) {
 	MouvVec collision(0,0,0);
 	int nbNeighbour = 0;
@@ -117,7 +109,7 @@ MouvVec Bird::separation(MouvVec position, Flock nuee, int id) {
 	for (auto bird: nuee.getBirds()) {
 		if (bird->getId() != id) {
 			MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
-			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getZoneRepulsion()) {
+			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getRepulsionArea()) {
 				birdPosTemp.subVec(position); 	
 				collision.subVec(birdPosTemp);
 				nbNeighbour ++;
@@ -134,15 +126,15 @@ MouvVec Bird::separation(MouvVec position, Flock nuee, int id) {
 	return collision;
 }
 
-// Règle 3: S'aligner à la vitesse des autres oiseaux
-MouvVec Bird::alignement(MouvVec velocite, MouvVec position, Flock nuee, int id) {
+// Rule 3: Alignment of speed bird
+MouvVec Bird::alignment(MouvVec velocity, MouvVec position, Flock nuee, int id) {
 	MouvVec perceivedVelocity(0,0,0);
 	int nbNeighbour = 0;
 
 	for (auto bird: nuee.getBirds()) {
 		if (bird->getId() != id) {
 			MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
-			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getZoneAlignement()) {
+			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getAlignmentArea()) {
 				perceivedVelocity.addVec(birdPosTemp);
 				nbNeighbour ++;
 			}
@@ -151,14 +143,14 @@ MouvVec Bird::alignement(MouvVec velocite, MouvVec position, Flock nuee, int id)
 
 	if (nbNeighbour > 0) {
 		perceivedVelocity.divScal(nbNeighbour);
-		perceivedVelocity.subVec(velocite);
-		perceivedVelocity.divScal(nuee.getAlignement());
+		perceivedVelocity.subVec(velocity);
+		perceivedVelocity.divScal(nuee.getAlignment());
 		limit(&perceivedVelocity, nuee.getForceMax());
 	}
 	return perceivedVelocity;
 }
 
-// Compte le nombre de voisins
+// Count neighbours
 void Bird::countNeighbours(Flock nuee, MouvVec position, int id) {
 	if (id == 4) {
 		int neighbour = 0;
