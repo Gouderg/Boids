@@ -22,8 +22,7 @@ class Bird {
 		~Bird(){};																		// Destructeur
 		
 		// Getter
-		int getId() const {return this->id;}											
-		float getAngle() const {return this->angle;}
+		int getId() const {return this->id;}
 		int getR() const {return color[0];}
 		int getG() const {return color[1];}
 		int getB() const {return color[2];}
@@ -49,7 +48,6 @@ class Bird {
 	private:
 		MouvVec *position;
 		MouvVec *velocite;
-		float angle;
 		int id;
 		int color[3];
 };

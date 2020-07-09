@@ -15,7 +15,7 @@ class Flock {
 	public:
 
 		const int SIZE_W = 1200;
-		const int SIZE_H = 800;
+		const int SIZE_H = 700;
 		const int SIZE_D = 1;	
 
 
@@ -46,7 +46,7 @@ class Flock {
 		const double zoneAttraction = sizeBird * 12;			// Zone d'attraction pour le centre perçu
 		const double zoneAlignement = sizeBird * 4;				// Zone d'orientation
 		const double zoneRepulsion = sizeBird * 2;				// Zone de répulsion
-		const double attraction = 0.01;							// Attraction de l'oiseau vers le centre perçu => 1%
-		const double repulsion = 1;								// Répulsion des autre oiseau
+		const double attraction = 0.02;							// Attraction de l'oiseau vers le centre perçu => 1%
+		const double repulsion = 0.02;								// Répulsion des autre oiseau
 		const double alignement = 1;
 };	

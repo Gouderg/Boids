@@ -57,19 +57,23 @@ void Bird::update(Flock nuee) {
 // Limite le vecteur avec le scalaire passé
 void Bird::limit(MouvVec* vecteur, double valMax) {
 
-	// On récupère la norme de la velocité
-	double norme = vecteur->normalize();
+	if (std::abs(vecteur->normalize()) > valMax) {
+		// On récupère la norme
+		double norme = vecteur->normalize();
 	
-	// On divise le vecteur par sa norme
-	vecteur->divScal(norme);
+		// On divise le vecteur par sa norme
+		vecteur->divScal(norme);
 
-	// On le multiplie par la vitesse
-	vecteur->mulScal(valMax);
+		// On le multiplie par la valeur max
+		vecteur->mulScal(valMax);
+	}
+	
 }
 
 // Check les bordures de la map
 void Bird::checkEdges(Flock nuee) {
 
+	// 2-tore 
 	if (this->position->getX() > nuee.SIZE_W) this->position->setX(std::fmod(this->position->getX(), nuee.SIZE_W));
 	if (this->position->getY() > nuee.SIZE_H) this->position->setY(std::fmod(this->position->getY(), nuee.SIZE_H));
 	if (this->position->getZ() > nuee.SIZE_D) this->position->setZ(std::fmod(this->position->getZ(), nuee.SIZE_D));
@@ -77,6 +81,7 @@ void Bird::checkEdges(Flock nuee) {
 	if (this->position->getX() < 0) this->position->setX(nuee.SIZE_W);
 	if (this->position->getY() < 0) this->position->setY(nuee.SIZE_H);	
 	if (this->position->getZ() < 0) this->position->setZ(nuee.SIZE_D);	
+
 }
 
 // Règle 1: Cohésion (Calcule le centre perçu par les oiseaux afin de les attiré au même endroit) 
@@ -119,7 +124,12 @@ MouvVec Bird::separation(MouvVec position, Flock nuee, int id) {
 			}
 		}
 	}
-	if (nbNeighbour > 0) limit(&collision, nuee.getForceMax());
+	if (nbNeighbour > 0) {
+		//collision.divScal(nbNeighbour);
+		//collision.subVec(position);
+		//collision.mulScal(nuee.getRepulsion());
+		limit(&collision, nuee.getForceMax());
+	}
 
 	return collision;
 }
@@ -162,7 +172,6 @@ void Bird::countNeighbours(Flock nuee, MouvVec position, int id) {
 				if ( tempNorme < (nuee.getSizeBird() * 2)) {
 					neighbour ++;
 				}
-				
 			}
 		}
 		std::cout << neighbour << std::endl;
