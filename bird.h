@@ -35,7 +35,7 @@ class Bird {
 		
 		// Rules
 		MouvVec cohesion(MouvVec position, Flock nuee, int id);
-		MouvVec separation(MouvVec position, Flock nuee, int id);
+		MouvVec separation(MouvVec velocity, MouvVec position, Flock nuee, int id);
 		MouvVec alignment(MouvVec velocity, MouvVec position, Flock nuee, int id);
 
 		void limit(MouvVec* vecteur, double valMax);

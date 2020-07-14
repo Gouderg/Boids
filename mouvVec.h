@@ -29,8 +29,10 @@ class MouvVec {
 		void divScal(double n);
 		void mulScal(double n);
 
-		// Norme du vecteur
-		double normalize();
+		
+		double magnitude();		// Magnitude of vector
+		void normalize();						
+		static double dist(MouvVec v1, MouvVec v2);	// Distance between 2 vector
 
 		// Setter
 		void setX(const double x) {this->x = x;}

@@ -55,8 +55,23 @@ void MouvVec::mulScal(double n) {
 	this->z *= n;	
 }
 
-double MouvVec::normalize() {
+double MouvVec::magnitude() {
 	return sqrt(pow(this->x,2) + pow(this->y, 2));
-	//return sqrt(pow(this->x,2) + pow(this->y, 2) + pow(this->z, 2));
+	// return sqrt(pow(this->x,2) + pow(this->y, 2) + pow(this->z, 2));
 
+}
+
+double MouvVec::dist(MouvVec v1, MouvVec v2) {
+	return sqrt(pow(v1.getX() - v2.getX(),2) + pow(v1.getY() - v2.getY(),2));
+	// return sqrt(pow(v1.getX() - v2.getX(),2) + pow(v1.getY() - v2.getY(),2) +  pow(v1.getZ() - v2.getZ(),2)); 
+}
+
+void MouvVec::normalize() {
+	double mag = this->magnitude();
+
+	if (mag > 0) {
+		this->setX(this->x / mag);
+		this->setY(this->y / mag);
+		//this->setZ(this->z / mag);
+	}
 }

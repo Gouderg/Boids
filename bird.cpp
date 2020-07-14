@@ -25,12 +25,12 @@ void Bird::drawBird(sf::RenderWindow *window, int sizeBird, int id) {
 	convex.setFillColor(sf::Color(getR(), getG(), getB()));
 	window->draw(convex);
 
-	/*if (id == 4) {
-		sf::CircleShape circle(sizeBird * 12);
-		circle.setPosition(position->getX() - sizeBird * 12, position->getY() - sizeBird * 12);
+	if (id == 4) {
+		sf::CircleShape circle(sizeBird * 2);
+		circle.setPosition(position->getX() - sizeBird * 2, position->getY() - sizeBird * 2);
 		circle.setFillColor(sf::Color(253, 241, 184, 50));
 		window->draw(circle);
-	}*/
+	}
 	
 	
 }
@@ -41,10 +41,11 @@ void Bird::update(Flock nuee) {
 	// Rule 1: cohesion
 	this->velocity->addVec(cohesion(*this->position, nuee, this->id));
 	// Rule 2: sparation
-	this->velocity->addVec(separation(*this->position, nuee, this->id));
+	this->velocity->addVec(separation(*this->velocity, *this->position, nuee, this->id));
 	// Rule 3: alignment
 	this->velocity->addVec(alignment(*this->velocity, *this->position, nuee, this->id));
 	
+	//countNeighbours(nuee, *this->position, this->id);
 	// Adjust speed
 	limit(this->velocity, nuee.getSpeedMax());
 
@@ -55,8 +56,8 @@ void Bird::update(Flock nuee) {
 // Limit vector with scalar
 void Bird::limit(MouvVec* vecteur, double valMax) {
 
-	if (std::abs(vecteur->normalize()) > valMax) {
-		vecteur->divScal(vecteur->normalize());
+	if (std::abs(vecteur->magnitude()) > valMax) {
+		vecteur->normalize();
 		vecteur->mulScal(valMax);
 	}
 	
@@ -85,7 +86,7 @@ MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
 	for (auto bird : nuee.getBirds()) {
 		MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
 		if (bird->getId() != id) {
-			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getAttractionArea()) {
+			if (MouvVec::dist(position, *bird->position) <= nuee.getAttractionArea()) {
 				perceivedCentre.addVec(birdPosTemp);		// On cumule chaque coordonnées
 				nbNeighbour ++;	
 			}
@@ -102,27 +103,30 @@ MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
 }
 
 // Rule 2: Separation (Repels birds around)
-MouvVec Bird::separation(MouvVec position, Flock nuee, int id) {
+MouvVec Bird::separation(MouvVec velocity, MouvVec position, Flock nuee, int id) {
 	MouvVec collision(0,0,0);
 	int nbNeighbour = 0;
 
 	for (auto bird: nuee.getBirds()) {
 		if (bird->getId() != id) {
 			MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
-			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getRepulsionArea()) {
-				birdPosTemp.subVec(position); 	
-				collision.subVec(birdPosTemp);
+			if (MouvVec::dist(position, *bird->position) <= nuee.getRepulsionArea()) {
+				birdPosTemp.subVec(position);
+				birdPosTemp.divScal(pow(MouvVec::dist(position, *bird->position),2));
+				collision.addVec(birdPosTemp);
 				nbNeighbour ++;
 			}
 		}
 	}
 	if (nbNeighbour > 0) {
-		//collision.divScal(nbNeighbour);
-		//collision.subVec(position);
-		//collision.mulScal(nuee.getRepulsion());
+		collision.divScal(nbNeighbour);
+		collision.normalize();
+		collision.mulScal(nuee.getSpeedMax());
+		collision.subVec(velocity);
 		limit(&collision, nuee.getForceMax());
 	}
 
+	collision.mulScal(nuee.getRepulsion());
 	return collision;
 }
 
@@ -134,7 +138,7 @@ MouvVec Bird::alignment(MouvVec velocity, MouvVec position, Flock nuee, int id) 
 	for (auto bird: nuee.getBirds()) {
 		if (bird->getId() != id) {
 			MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
-			if (std::abs(birdPosTemp.normalize() - position.normalize()) <= nuee.getAlignmentArea()) {
+			if (MouvVec::dist(position, *bird->position) <= nuee.getAlignmentArea()) {
 				perceivedVelocity.addVec(birdPosTemp);
 				nbNeighbour ++;
 			}
@@ -160,7 +164,7 @@ void Bird::countNeighbours(Flock nuee, MouvVec position, int id) {
 				MouvVec* temp = new MouvVec(elt->position->getX(), elt->position->getY() , 0);
 				MouvVec v = position;
 				temp->subVec(v);
-				double tempNorme = temp->normalize();
+				double tempNorme = temp->magnitude();
 				if ( tempNorme < (nuee.getSizeBird() * 2)) {
 					neighbour ++;
 				}

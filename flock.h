@@ -46,8 +46,8 @@ class Flock {
 		const double forceMax = 0.2;						// Magnitude max
 		const double attractionArea = sizeBird * 12;		// Attraction area pour le centre perçu
 		const double alignmentArea = sizeBird * 4;			// Orientation area
-		const double repulsionArea = sizeBird * 2;			// Repulsion area
-		const double attraction = 0.02;						// Attraction force
-		const double repulsion = 0.02;						// Repulsion force
+		const double repulsionArea = sizeBird * 12;			// Repulsion area
+		const double attraction = 1;						// Attraction force
+		const double repulsion = -1;						// Repulsion force
 		const double alignment = 1;							// Alignment force
 };	
