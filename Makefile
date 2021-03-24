@@ -1,16 +1,16 @@
 boid: main.o flock.o bird.o mouvVec.o
 	g++ $^ -o $@ -lsfml-graphics -lsfml-window -lsfml-system
 
-main.o: main.cpp flock.h
+main.o: main.cpp include/flock.h
 	g++ -Wall -std=c++11 -c $<
 
-flock.o: flock.cpp flock.h
+flock.o: src/flock.cpp include/flock.h
 	g++ -Wall -std=c++11 -c $<
 
-bird.o: bird.cpp bird.h
+bird.o: src/bird.cpp include/bird.h
 	g++ -Wall -std=c++11 -c $<
 
-mouvVec.o: mouvVec.cpp mouvVec.h
+mouvVec.o: src/mouvVec.cpp include/mouvVec.h
 	g++ -Wall -std=c++11 -c $<
 
 clean:

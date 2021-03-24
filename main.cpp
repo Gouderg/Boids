@@ -4,9 +4,9 @@
 #include <unistd.h>
 #include <ctime>
 
-#include "bird.h"
-#include "flock.h"
-#include "mouvVec.h"
+#include "include/bird.h"
+#include "include/flock.h"
+#include "include/mouvVec.h"
 
 int main(int argc, char const *argv[]) {	
 	

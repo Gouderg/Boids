@@ -1,4 +1,4 @@
-#include "bird.h"
+#include "../include/bird.h"
 
 Bird::Bird(int id, int r, int g, int b, double x, double y, double z) {
 
@@ -7,7 +7,7 @@ Bird::Bird(int id, int r, int g, int b, double x, double y, double z) {
 	color[1] = g;
 	color[2] = b;
 	this->position = new MouvVec(x, y, z);
-	this->velocity = new MouvVec(((rand() % 4000) - 1500)/1000.0, ((rand() % 4000) - 1500)/1000.0, 0);	
+	this->velocity = new MouvVec(((rand() % 4000) - 1500)/1000.0, ((rand() % 4000) - 1500)/1000.0, 0);
 }
 
 // Draw new bird

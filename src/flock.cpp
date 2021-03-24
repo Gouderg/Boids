@@ -1,4 +1,4 @@
-#include "flock.h"
+#include "../include/flock.h"
 
 Flock::Flock() {
 	for (int i = 0; i < nbBird; ++i) {

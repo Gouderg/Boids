@@ -1,4 +1,4 @@
-#include "mouvVec.h"
+#include "../include/mouvVec.h"
 
 MouvVec::MouvVec(const double x, const double y, const double z) {
 	this->x = x;
