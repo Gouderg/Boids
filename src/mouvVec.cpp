@@ -75,3 +75,7 @@ void MouvVec::normalize() {
 		//this->setZ(this->z / mag);
 	}
 }
+
+double MouvVec::headings() {
+	return atan2(this->y, this->x) * 180/M_PI;
+}

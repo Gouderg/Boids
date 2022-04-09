@@ -33,6 +33,7 @@ class MouvVec {
 		double magnitude();		// Magnitude of vector
 		void normalize();						
 		static double dist(MouvVec v1, MouvVec v2);	// Distance between 2 vector
+		double headings();
 
 		// Setter
 		void setX(const double x) {this->x = x;}

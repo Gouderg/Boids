@@ -13,15 +13,16 @@ Bird::Bird(int id, int r, int g, int b, double x, double y, double z) {
 // Draw new bird
 void Bird::drawBird(sf::RenderWindow *window, int sizeBird, int id) {
 	
-	double angle = M_PI - atan2(velocity->getX(),velocity->getY());
-
 	// Bird
 	sf::ConvexShape convex;
 	convex.setPointCount(4);
-	convex.setPoint(0, sf::Vector2f(position->getX() + (-sizeBird) * cos(angle) + (-sizeBird) * sin(angle), position->getY() + (-sizeBird) * sin(angle) + sizeBird * cos(angle)));
-	convex.setPoint(1, sf::Vector2f(position->getX(), position->getY()));
-	convex.setPoint(2, sf::Vector2f(position->getX() + (sizeBird) * cos(angle) + (-sizeBird) * sin(angle), position->getY() + sizeBird * sin(angle) + (sizeBird) * cos(angle)));
-	convex.setPoint(3, sf::Vector2f(position->getX() + (sizeBird) * sin(angle), position->getY() + (-sizeBird) * cos(angle)));
+	convex.setPoint(0, sf::Vector2f(-sizeBird , -sizeBird));
+	convex.setPoint(1, sf::Vector2f(sizeBird , 0));
+	convex.setPoint(2, sf::Vector2f(-sizeBird , sizeBird));
+	convex.setPoint(3, sf::Vector2f(-sizeBird/2, 0));
+	
+	convex.setPosition(position->getX(), position->getY());
+	convex.setRotation(velocity->headings());
 	convex.setFillColor(sf::Color(getR(), getG(), getB()));
 	window->draw(convex);
 
