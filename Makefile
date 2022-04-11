@@ -1,3 +1,5 @@
+all: boid clean
+
 boid: main.o flock.o bird.o mouvVec.o
 	g++ $^ -o $@ -lsfml-graphics -lsfml-window -lsfml-system
 
@@ -14,6 +16,6 @@ mouvVec.o: src/mouvVec.cpp include/mouvVec.h
 	g++ -Wall -std=c++11 -c $<
 
 clean:
-	rm *.o boid
+	rm *.o
 
 r: clean boid

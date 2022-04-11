@@ -70,12 +70,30 @@ void MouvVec::normalize() {
 	double mag = this->magnitude();
 
 	if (mag > 0) {
-		this->setX(this->x / mag);
-		this->setY(this->y / mag);
-		//this->setZ(this->z / mag);
+		this->divScal(mag);
 	}
 }
 
 double MouvVec::headings() {
 	return atan2(this->y, this->x) * 180/M_PI;
+}
+
+void MouvVec::setMag(double max) {
+	this->normalize();
+	this->mulScal(max);
+}
+
+double MouvVec::dotProduct(MouvVec v1, MouvVec v2) {
+    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+double MouvVec::angleBetween(MouvVec v1, MouvVec v2) {
+    return acos(dotProduct(v1, v2) / (v1.magnitude() * v2.magnitude())) * 180/M_PI;
+}
+
+void MouvVec::limit(double max) {
+    if (this->magnitude() > max) {
+        this->normalize();
+        this->mulScal(max);
+    }
 }
