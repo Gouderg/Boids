@@ -14,11 +14,12 @@ int main(int argc, char const *argv[]) {
 	// Initialisation d'une nuee
 	Flock nuee = Flock();
 
+
 	// Initialisation de l'antialiasing et de la fenêtre
 	sf::ContextSettings settings;
 	settings.antialiasingLevel = 8;
 	sf::RenderWindow window(sf::VideoMode(nuee.SIZE_W,nuee.SIZE_H), "Boids", sf::Style::Default, settings);
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(10);
 
 	while (window.isOpen()) {
 		sf::Event event;

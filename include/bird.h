@@ -39,7 +39,7 @@ class Bird {
 		MouvVec alignment(MouvVec velocity, MouvVec position, Flock nuee, int id);
 
 		void checkEdges(Flock nuee);
-		void countNeighbours(Flock nuee, MouvVec position, int id);
+		void countNeighbours(Flock nuee, MouvVec position, MouvVec velocity, int id);
 		MouvVec seek(Flock nuee, MouvVec target);
 		MouvVec flee(Flock nuee, MouvVec target);
 
