@@ -6,13 +6,9 @@ Bird::Bird(int id, int r, int g, int b, double x, double y, double z) {
 	color[0] = r;
 	color[1] = g;
 	color[2] = b;
-	if (id == 1) {
-		this->position = new MouvVec(x, y, z);
-	} else {
-		this->position = new MouvVec(x, y - 30, z);
-	}
-	// this->velocity = new MouvVec(((rand() % 4000) - 1500)/1000.0, ((rand() % 4000) - 1500)/1000.0, 0);
-	this->velocity = new MouvVec(-1,1,0);
+
+	this->position = new MouvVec(x, y, z);
+	this->velocity = new MouvVec(((rand() % 5000) - 2000.0)/1000.0, ((rand() % 5000) - 2000.0)/1000.0, 0);
 }
 
 // Draw new bird
@@ -36,6 +32,11 @@ void Bird::drawBird(sf::RenderWindow *window, int sizeBird, int id) {
 		circle.setPosition(position->getX() - sizeBird * 12, position->getY() - sizeBird * 12);
 		circle.setFillColor(sf::Color(253, 241, 184, 50));
 		window->draw(circle);
+
+		sf::CircleShape circleRep(sizeBird * 4);
+		circleRep.setPosition(position->getX() - sizeBird * 4, position->getY() - sizeBird * 4);
+		circleRep.setFillColor(sf::Color(253, 241, 0, 50));
+		window->draw(circleRep);
 	}	
 	
 }
@@ -44,26 +45,26 @@ void Bird::drawBird(sf::RenderWindow *window, int sizeBird, int id) {
 void Bird::update(Flock nuee) {
 
 	
-	MouvVec acc = MouvVec((rand() % 20 - 10.0) / 100.0, (rand() % 20 - 10.0) / 100.0, 0);	
-	if (this->id == 1) {
-		countNeighbours(nuee, *this->position, *this->velocity, this->id);
-	}
+	MouvVec acc = MouvVec(0, 0, 0);	
+	
+	// Rule 1: cohesion
+	acc.add(cohesion(nuee, *this->velocity, *this->position, this->id));
+	// Rule 2: separation
+	acc.add(separation(*this->velocity, *this->position, nuee, this->id));
+	// Rule 3: alignment
+	acc.add(alignment(*this->velocity, *this->position, nuee, this->id));
+	
+
 	// Add acceleration.
 	this->velocity->add(acc);
 
-	// Adjust speed
+	// Adjust speed.
 	this->velocity->limit(nuee.getSpeedMax());
 
 	this->position->add(*this->velocity);
 	
-	// Rule 1: cohesion
-	// acc.addVec(seek(nuee, cohesion(*this->position, nuee, this->id)));
-	// Rule 2: separation
-	// acc.addVec(flee(nuee, separation(*this->velocity, *this->position, nuee, this->id)));
-	// Rule 3: alignment
-	// acc.addVec(seek(nuee, alignment(*this->velocity, *this->position, nuee, this->id)));
-	
-	checkEdges(nuee);
+	// Check borders.
+	checkEdges(nuee);	
 }
 
 // Check map borders
@@ -80,25 +81,28 @@ void Bird::checkEdges(Flock nuee) {
 
 }
 
+
 // Rule 1: Cohesion (Calculate the perceived center with his neighbours) 
-MouvVec Bird::cohesion(MouvVec position, Flock nuee, int id) {
+MouvVec Bird::cohesion(Flock nuee, MouvVec velocity, MouvVec position,  int id) {
 
 	MouvVec perceivedCentre(0,0,0);
 	int nbNeighbour = 0;
 
 	for (auto bird : nuee.getBirds()) {
 		MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
-		if (bird->getId() != id) {
-			if (MouvVec::dist(position, *bird->position) <= nuee.getAttractionArea()) {
-				perceivedCentre.add(birdPosTemp);		// On cumule chaque coordonnées
-				nbNeighbour ++;	
-			}
+		if (bird->getId() != id && MouvVec::dist(position, *bird->position) <= nuee.getAttractionArea() && MouvVec::angleWith(position, *bird->position, velocity.headings()) <= 150) {
+			perceivedCentre.add(birdPosTemp);
+			nbNeighbour += 1;	
 		}
 	}
 	if (nbNeighbour > 0) {
-		perceivedCentre.div(nbNeighbour);				 		
+		perceivedCentre.div(nbNeighbour);
+		perceivedCentre.setMag(nuee.getSpeedMax());
+		perceivedCentre.sub(velocity);
+		perceivedCentre.limit(nuee.getForceMax());			 		
 	}
 
+	perceivedCentre.mul(nuee.getAttraction());
 	return perceivedCentre;
 }
 
@@ -110,18 +114,18 @@ MouvVec Bird::separation(MouvVec velocity, MouvVec position, Flock nuee, int id)
 	for (auto bird: nuee.getBirds()) {
 		if (bird->getId() != id) {
 			MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
-			if (MouvVec::dist(position, *bird->position) <= nuee.getRepulsionArea()) {
+			if (MouvVec::dist(position, *bird->position) <= nuee.getRepulsionArea() && MouvVec::angleWith(position, *bird->position, velocity.headings()) <= 150) {
 				birdPosTemp.sub(position);
 				birdPosTemp.div(pow(MouvVec::dist(position, *bird->position),2));
+
 				collision.add(birdPosTemp);
-				nbNeighbour ++;
+				nbNeighbour += 1;
 			}
 		}
 	}
 	if (nbNeighbour > 0) {
 		collision.div(nbNeighbour);
-		collision.normalize();
-		collision.mul(nuee.getSpeedMax());
+		collision.setMag(nuee.getSpeedMax());
 		collision.sub(velocity);
 		collision.limit(nuee.getForceMax());
 	}
@@ -139,7 +143,7 @@ MouvVec Bird::alignment(MouvVec velocity, MouvVec position, Flock nuee, int id) 
 		if (bird->getId() != id) {
 			MouvVec birdPosTemp(bird->position->getX(), bird->position->getY(), 0);
 			if (MouvVec::dist(position, *bird->position) <= nuee.getAlignmentArea()) {
-				perceivedVelocity.add(birdPosTemp);
+				perceivedVelocity.add(*bird->getVelocity());
 				nbNeighbour ++;
 			}
 		}
@@ -151,6 +155,8 @@ MouvVec Bird::alignment(MouvVec velocity, MouvVec position, Flock nuee, int id) 
 		perceivedVelocity.div(nuee.getAlignment());
 		perceivedVelocity.limit(nuee.getForceMax());
 	}
+
+	perceivedVelocity.mul(nuee.getAlignment());
 	return perceivedVelocity;
 }
 
@@ -164,19 +170,4 @@ void Bird::countNeighbours(Flock nuee, MouvVec position, MouvVec velocity, int i
 		}
 	}
 	std::cout << neighbour << std::endl;
-}
-
-// Go to a point.
-MouvVec Bird::seek(Flock nuee, MouvVec target) {
-    target.sub(*this->getPosition());
-    target.setMag(nuee.getSpeedMax());
-    target.sub(*this->getVelocity());
-    target.limit(nuee.getForceMax());
-    return target;
-}
-
-MouvVec Bird::flee(Flock nuee, MouvVec target) {
-	MouvVec force = this->seek(nuee, target);
-    force.mul(-1);
-    return force;
 }

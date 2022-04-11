@@ -40,14 +40,14 @@ class Flock {
 		std::vector<Bird*> birds;
 		
 		// Constants about birds characteristics
-		const int nbBird = 10;								// Numbers of bird
+		const int nbBird = 150;								// Numbers of bird
 		const int sizeBird = 7;								// Size of bird
-		const double speedMax = 2;							// Speed max
-		const double forceMax = 0.2;						// Magnitude max
+		const double speedMax = 4;							// Speed max
+		const double forceMax = 1;							// Magnitude max
 		const double attractionArea = sizeBird * 12;		// Attraction area pour le centre perçu
-		const double alignmentArea = sizeBird * 4;			// Orientation area
-		const double repulsionArea = sizeBird * 12;			// Repulsion area
-		const double attraction = 0.5;						// Attraction force
-		const double repulsion = -1;						// Repulsion force
+		const double alignmentArea = sizeBird * 12;			// Orientation area
+		const double repulsionArea = sizeBird * 4;			// Repulsion area
+		const double attraction = 1;						// Attraction force
+		const double repulsion = -4;						// Repulsion force
 		const double alignment = 1;							// Alignment force
 };	

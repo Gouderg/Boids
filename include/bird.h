@@ -34,15 +34,13 @@ class Bird {
 		void drawBird(sf::RenderWindow *window, int sizeBird, int id);
 		
 		// Rules
-		MouvVec cohesion(MouvVec position, Flock nuee, int id);
+		MouvVec cohesion(Flock nuee, MouvVec velocity, MouvVec position,  int id);
 		MouvVec separation(MouvVec velocity, MouvVec position, Flock nuee, int id);
 		MouvVec alignment(MouvVec velocity, MouvVec position, Flock nuee, int id);
 
+		// Others.
 		void checkEdges(Flock nuee);
 		void countNeighbours(Flock nuee, MouvVec position, MouvVec velocity, int id);
-		MouvVec seek(Flock nuee, MouvVec target);
-		MouvVec flee(Flock nuee, MouvVec target);
-
 
 
 	private:
